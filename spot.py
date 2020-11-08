@@ -1,5 +1,7 @@
-import constants as const
-from pygame.draw import rect as draw_rect
+import pygame
+
+from constants import RED, GREEN, BLACK, ORANGE, AZURE, WHITE, PURPLE
+
 
 class Spot:
     def __init__(self, row, col, width, total_rows):
@@ -7,55 +9,63 @@ class Spot:
         self.col = col        
         self.width = width
         self.total_rows = total_rows
-        self.x = row*width
-        self.y = col*width
-        self.color = const.WHITE
-        self.neighbours = []
+        self.x = row * width
+        self.y = col * width
+        self.color = WHITE
+        self.neighbors = []
 
     def get_pos(self):
         return self.row, self.col
 
     def is_closed(self):
-        return self.color == const.RED
+        return self.color == RED
 
     def is_open(self):
-        return self.color == const.GREEN
+        return self.color == GREEN
     
     def is_wall(self):
-        return self.color == const.BLACK
+        return self.color == BLACK
 
     def is_start(self):
-        return self.color == const.ORANGE
+        return self.color == ORANGE
 
     def is_end(self):
-        return self.color == const.AZURE
+        return self.color == AZURE
 
     def reset(self):
-        self.color = const.WHITE
+        self.color = WHITE
 
     def make_closed(self):
-        self.color = const.RED
+        self.color = RED
 
     def make_open(self):
-        self.color = const.GREEN
+        self.color = GREEN
     
     def make_wall(self):
-        self.color = const.BLACK
+        self.color = BLACK
 
     def make_start(self):
-        self.color = const.ORANGE
+        self.color = ORANGE
 
     def make_end(self):
-        self.color = const.AZURE
+        self.color = AZURE
 
     def make_path(self):
-        self.color = const.PURPLE
+        self.color = PURPLE
 
     def draw(self, window):
-        draw_rect(window, self.color, (self.x, self.y, self.width, self.width))
+        pygame.draw.rect(window, self.color, (self.x, self.y, self.width, self.width))
 
     def update_neighbors(self, grid):
-        pass
+        self.neighbors = []
+        if self.row < self.total_rows - 1 and not grid[self.row + 1][self.col].is_wall(): #if we can go down
+            self.neighbors.append(grid[self.row + 1][self.col])
 
-    def __lt__(self, other):
-        return False
+        if self.row > 0 and not grid[self.row - 1][self.col].is_wall(): #if we can go up
+            self.neighbors.append(grid[self.row - 1][self.col])
+
+        if self.col < self.total_rows - 1 and not grid[self.row][self.col + 1].is_wall(): #if we can go right
+            self.neighbors.append(grid[self.row][self.col + 1])
+
+        if self.col > 0 and not grid[self.row][self.col - 1].is_wall(): #if we can go left
+            self.neighbors.append(grid[self.row][self.col - 1])
